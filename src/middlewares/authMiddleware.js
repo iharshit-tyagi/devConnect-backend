@@ -1,0 +1,1 @@
+//Add middleware to check if user has auth
