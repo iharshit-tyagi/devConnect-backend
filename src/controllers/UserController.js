@@ -2,13 +2,20 @@
 import { response } from "express"
 import prisma from "../config/db.js"
 
-const checkIfUserExist = async (username) => {
-    const response = await prisma.users.findFirst({ where: { username } });
+const checkIfUserExist = async (username, email) => {
+    const response = await prisma.users.findFirst({
+        where: {
+            OR:
+                [{ username },
+                { email }
+                ]
+        }
+    });
     return response;
 }
 export const createUserinDB = async (req, res, next) => {
     try {
-        const userInDB = await checkIfUserExist(req?.body?.name);
+        const userInDB = await checkIfUserExist(req?.body?.username);
 
 
         if (userInDB) {
@@ -19,7 +26,7 @@ export const createUserinDB = async (req, res, next) => {
         }
         const response = await prisma.users.create({
             data: {
-                username: req?.body?.name,
+                username: req?.body?.username,
                 email: req?.body?.email,
                 password: req?.hashPassword
             }
@@ -34,7 +41,7 @@ export const createUserinDB = async (req, res, next) => {
 }
 export const getUserFromDB = async (req, res, next) => {
     try {
-        const userInDB = await checkIfUserExist(req?.body?.name)
+        const userInDB = await checkIfUserExist(req?.body?.username, req?.body?.email)
         if (!userInDB) {
             res.status(404).json({
                 message: 'User Does not Exist'
@@ -64,7 +71,23 @@ export const getUsersListFromDB = async (req, res, next) => {
     }
     catch (err) {
         console.log(err);
+    }
+}
 
+export const updateUserInDB = async (req, res, next) => {
+    try {
+        const result = await prisma.users.update({
+            data: { accessToken: req?.data },
+            where: {
+                // 
+                id: req?.userFromDB?.id
+            }
+
+        });
+        console.log(result);
+        next();
+    } catch (err) {
+        next(err);
     }
 }
 

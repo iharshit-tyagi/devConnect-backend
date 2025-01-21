@@ -1,10 +1,14 @@
 import jwt from "jsonwebtoken";
-
 export const generateAccessToken = async (req, res, next) => {
 
     const token = await jwt.sign(req?.userFromDB, process.env.JWT_PRIVATE_KEY, { expiresIn: '500s' });
-    res.cookie('accessToken', token)
-    next();
+    try {
+        res.cookie('accessToken', token)
+        req.data = token;
+        next();
+    } catch (err) {
+        next(err)
+    }
 }
 export const verifyToken = async (token) => {
     let decodedInfo = null;
