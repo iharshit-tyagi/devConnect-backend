@@ -47,12 +47,12 @@ userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generat
     })
 })
 userRoute.post('/signup', checkSignUpBody, hashPassword, createUserinDB, generateAccessToken, updateUserInDB, (req, res) => {
-    delete req?.userfromDB?.password
+    delete req?.userFromDB?.password
 
     res.status(200).json({
         success: true,
         result: 'Signed Up',
-        response: req?.userfromDB
+        response: req?.userFromDB
     })
 })
 userRoute.get('/userlist', checkAuthStatus, getUsersListFromDB, (req, res) => {

@@ -31,8 +31,8 @@ export const createUserinDB = async (req, res, next) => {
                 password: req?.hashPassword
             }
         })
-        res.status(200).json({ response });
-
+        req.userFromDB = response;
+        next();
 
     } catch (err) {
         console.log(err);
@@ -84,7 +84,7 @@ export const updateUserInDB = async (req, res, next) => {
             }
 
         });
-        console.log(result);
+        req.userFromDB = result;
         next();
     } catch (err) {
         next(err);
