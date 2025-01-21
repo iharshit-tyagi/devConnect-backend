@@ -3,7 +3,12 @@ export const generateAccessToken = async (req, res, next) => {
 
     const token = await jwt.sign(req?.userFromDB, process.env.JWT_PRIVATE_KEY, { expiresIn: '500s' });
     try {
-        res.cookie('accessToken', token)
+        res.cookie('accessToken', token, {
+            httpOnly: true, // Prevents client-side access
+            secure: true, // Ensures the cookie is sent over HTTPS
+            sameSite: 'strict', // Prevents CSRF attacks
+            maxAge: 3600000, // 1 hour
+        })
         req.data = token;
         next();
     } catch (err) {
