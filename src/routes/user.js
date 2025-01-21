@@ -1,6 +1,8 @@
 import { response, Router } from "express"
 import { hashPassword, verifyPassword } from "../utils/hashHelper.js";
-import { createUserinDB, getUserFromDB } from "../controllers/UserController.js";
+import { createUserinDB, getUserFromDB, getUsersListFromDB } from "../controllers/UserController.js";
+import { generateAccessToken } from "../utils/jwtHelper.js";
+import { checkAuthStatus } from "../middlewares/authMiddleware.js";
 
 const userRoute = Router();
 
@@ -34,8 +36,8 @@ const checkSignUpBody = (req, res, next) => {
 
 }
 
-userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, (req, res) => {
-    delete req?.userFromDB?.password;
+userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generateAccessToken, (req, res) => {
+
 
     res.status(200).json({
         success: true,
@@ -43,7 +45,7 @@ userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, (req, r
         response: req?.userFromDB
     })
 })
-userRoute.post('/signup', checkSignUpBody, hashPassword, createUserinDB, (req, res) => {
+userRoute.post('/signup', checkSignUpBody, hashPassword, createUserinDB, generateAccessToken, (req, res) => {
     delete req?.userfromDB?.password
 
     res.status(200).json({
@@ -52,5 +54,11 @@ userRoute.post('/signup', checkSignUpBody, hashPassword, createUserinDB, (req, r
         response: req?.userfromDB
     })
 })
+userRoute.get('/userlist', checkAuthStatus, getUsersListFromDB, (req, res) => {
+    res.status(200).json({
+        success: true,
+        response: req?.response
+    })
 
+})
 export default userRoute;

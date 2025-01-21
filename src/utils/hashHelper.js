@@ -15,8 +15,6 @@ export const hashPassword = async (req, res, next) => {
 }
 export const verifyPassword = async (req, res, next) => {
    // Load hash from your password DB.
-   // await getUserFromDB();
-   console.log(req?.userFromDB);
 
    bcrypt.compare(req?.body?.password, req?.userFromDB?.password, function (err, result) {
       if (!result) {
@@ -25,6 +23,7 @@ export const verifyPassword = async (req, res, next) => {
          })
          return;
       }
+      delete req?.userFromDB?.password;
       req.correctPassword = result;
       next();
 

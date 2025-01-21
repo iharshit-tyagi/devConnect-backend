@@ -9,7 +9,7 @@ const checkIfUserExist = async (username) => {
 export const createUserinDB = async (req, res, next) => {
     try {
         const userInDB = await checkIfUserExist(req?.body?.name);
-        console.log(userInDB);
+
 
         if (userInDB) {
             res.status(402).json({
@@ -49,3 +49,23 @@ export const getUserFromDB = async (req, res, next) => {
 
     }
 }
+
+export const getUsersListFromDB = async (req, res, next) => {
+    try {
+        const result = await prisma.users.findMany({
+            select: {
+                username: true,
+                email: true,
+            },
+        });
+        req.response = result;
+        // req.userFromDB = userInDB;
+        next()
+    }
+    catch (err) {
+        console.log(err);
+
+    }
+}
+
+
