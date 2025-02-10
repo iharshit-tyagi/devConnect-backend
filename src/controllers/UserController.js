@@ -1,5 +1,5 @@
 //Controllers related to user
-import { response } from "express"
+
 import prisma from "../config/db.js"
 
 const checkIfUserExist = async (username, email) => {

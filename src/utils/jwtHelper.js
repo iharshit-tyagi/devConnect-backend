@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 export const generateAccessToken = async (req, res, next) => {
-
-    const token = await jwt.sign(req?.userFromDB, process.env.JWT_PRIVATE_KEY, { expiresIn: '500s' });
+    const token = await jwt.sign({ id: req?.userFromDB?.id }, process.env.JWT_PRIVATE_KEY, { expiresIn: '500s' });
     try {
         res.cookie('accessToken', token, {
             httpOnly: true, // Prevents client-side access
