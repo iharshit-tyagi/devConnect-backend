@@ -28,7 +28,8 @@ export const createUserinDB = async (req, res, next) => {
             data: {
                 username: req?.body?.username,
                 email: req?.body?.email,
-                password: req?.hashPassword
+                password: req?.hashPassword,
+                firstName: req?.body?.firstName
             }
         })
         req.userFromDB = response;
@@ -74,7 +75,7 @@ export const getUsersListFromDB = async (req, res, next) => {
     }
 }
 
-export const updateUserInDB = async (req, res, next) => {
+export const updateAccessTokenInDB = async (req, res, next) => {
     try {
         const result = await prisma.users.update({
             data: { accessToken: req?.data },
@@ -90,5 +91,7 @@ export const updateUserInDB = async (req, res, next) => {
         next(err);
     }
 }
+
+
 
 

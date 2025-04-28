@@ -9,6 +9,7 @@ const port = process.env.PORT || 4000;
 
 app.use(cookieParser());
 app.use(express.json());
+//This line is here to handle cors issues
 app.use(cors({ credentials: true }));
 app.use('/api/v1', v1)
 app.listen(port, () => {

@@ -1,7 +1,4 @@
 import bcrypt from "bcrypt"
-import client from "../config/db.js";
-import { getUserFromDB } from "../controllers/UserController.js";
-
 const saltRounds = 10;
 
 export const hashPassword = async (req, res, next) => {

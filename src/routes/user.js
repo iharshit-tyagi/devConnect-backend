@@ -1,6 +1,6 @@
 import { response, Router } from "express"
 import { hashPassword, verifyPassword } from "../utils/hashHelper.js";
-import { createUserinDB, getUserFromDB, getUsersListFromDB, updateUserInDB } from "../controllers/UserController.js";
+import { createUserinDB, getUserFromDB, getUsersListFromDB, updateAccessTokenInDB } from "../controllers/UserController.js";
 import { generateAccessToken } from "../utils/jwtHelper.js";
 import { checkAuthStatus } from "../middlewares/authMiddleware.js";
 
@@ -26,7 +26,8 @@ const checkSignUpBody = (req, res, next) => {
     const email = req?.body?.email;
     const password = req?.body?.password;
     const name = req?.body?.username;
-    if (!email || !password || !name) {
+    const firstName = req?.body?.firstName;
+    if (!email || !password || !name || !firstName) {
         res.status(400).json({
             success: false,
             message: 'Invalid Input'
@@ -37,16 +38,17 @@ const checkSignUpBody = (req, res, next) => {
 
 }
 
-userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generateAccessToken, updateUserInDB, (req, res) => {
+userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generateAccessToken, updateAccessTokenInDB, (req, res) => {
 
-
+    delete req?.userFromDB?.password;
+    delete req?.userFromDB?.accessToken;
     res.status(200).json({
         success: true,
         result: 'Logged in',
         response: req?.userFromDB
     })
 })
-userRoute.post('/signup', checkSignUpBody, hashPassword, createUserinDB, generateAccessToken, updateUserInDB, (req, res) => {
+userRoute.post('/signup', checkSignUpBody, hashPassword, createUserinDB, generateAccessToken, updateAccessTokenInDB, (req, res) => {
     delete req?.userFromDB?.password
 
     res.status(200).json({
@@ -61,5 +63,8 @@ userRoute.get('/userlist', checkAuthStatus, getUsersListFromDB, (req, res) => {
         response: req?.response
     })
 
+})
+userRoute.patch('/user', checkAuthStatus, (req, res) => {
+    res.send('User Updated')
 })
 export default userRoute;
