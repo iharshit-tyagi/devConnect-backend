@@ -64,6 +64,8 @@ export const getUsersListFromDB = async (req, res, next) => {
             select: {
                 username: true,
                 email: true,
+                firstName: true,
+                lastName: true
             },
         });
         req.response = result;
@@ -87,6 +89,28 @@ export const updateAccessTokenInDB = async (req, res, next) => {
         });
         req.userFromDB = result;
         next();
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const updateUserInDB = async (req, res, next) => {
+    try {
+        const result = await prisma.users.update({
+            data: req?.body, where: {
+                id: req?.userId
+            }, select: {
+                firstName: true,
+                lastName: true,
+                accessToken: false,
+                password: false,
+                email: true
+            }
+        })
+        if (result) {
+            req.userFromDB = result;
+            next();
+        }
     } catch (err) {
         next(err);
     }

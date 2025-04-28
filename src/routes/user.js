@@ -1,6 +1,6 @@
 import { response, Router } from "express"
 import { hashPassword, verifyPassword } from "../utils/hashHelper.js";
-import { createUserinDB, getUserFromDB, getUsersListFromDB, updateAccessTokenInDB } from "../controllers/UserController.js";
+import { createUserinDB, getUserFromDB, getUsersListFromDB, updateAccessTokenInDB, updateUserInDB } from "../controllers/UserController.js";
 import { generateAccessToken } from "../utils/jwtHelper.js";
 import { checkAuthStatus } from "../middlewares/authMiddleware.js";
 
@@ -38,6 +38,24 @@ const checkSignUpBody = (req, res, next) => {
 
 }
 
+const readDataToUpdate = (req, res, next) => {
+    try {
+        const dataToUpdate = req?.body;
+        // console.log(dataToUpdate);
+
+        if (Object.keys(dataToUpdate).length > 0) {
+            next();
+            return;
+        } else {
+            res.status(400).json({
+                message: 'Invalid Input'
+            })
+        }
+    } catch (err) {
+        next(err)
+    }
+}
+
 userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generateAccessToken, updateAccessTokenInDB, (req, res) => {
 
     delete req?.userFromDB?.password;
@@ -64,7 +82,14 @@ userRoute.get('/userlist', checkAuthStatus, getUsersListFromDB, (req, res) => {
     })
 
 })
-userRoute.patch('/user', checkAuthStatus, (req, res) => {
-    res.send('User Updated')
+
+
+userRoute.patch('/update', checkAuthStatus, readDataToUpdate, updateUserInDB, (req, res) => {
+
+    res.status(200).json({
+        success: true,
+        result: 'User Updated',
+        response: req?.userFromDB
+    })
 })
 export default userRoute;
