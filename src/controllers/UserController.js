@@ -116,6 +116,29 @@ export const updateUserInDB = async (req, res, next) => {
     }
 }
 
+export const deleteUserInDB = async (req, res, next) => {
+    try {
+        const deletedUser = await prisma.users.delete({
+            where: {
+                id: req?.userId
+            }
+        })
+        console.log(deletedUser);
+
+        if (deletedUser) {
+            next();
+        }
+        else {
+            res.status(400).json({
+                message: 'Could not delete user !'
+            })
+        }
+        next();
+    } catch (err) {
+        next(err);
+    }
+}
+
 
 
 

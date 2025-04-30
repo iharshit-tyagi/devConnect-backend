@@ -1,6 +1,6 @@
 import { response, Router } from "express"
 import { hashPassword, verifyPassword } from "../utils/hashHelper.js";
-import { createUserinDB, getUserFromDB, getUsersListFromDB, updateAccessTokenInDB, updateUserInDB } from "../controllers/UserController.js";
+import { createUserinDB, getUserFromDB, getUsersListFromDB, deleteUserInDB, updateAccessTokenInDB, updateUserInDB } from "../controllers/UserController.js";
 import { generateAccessToken } from "../utils/jwtHelper.js";
 import { checkAuthStatus } from "../middlewares/authMiddleware.js";
 
@@ -90,6 +90,14 @@ userRoute.patch('/update', checkAuthStatus, readDataToUpdate, updateUserInDB, (r
         success: true,
         result: 'User Updated',
         response: req?.userFromDB
+    })
+})
+userRoute.delete('/delete', checkAuthStatus, deleteUserInDB, (req, res) => {
+    //   if(req?.deleted){
+
+    //   }
+    res.status(200).json({
+        message: 'User Deleted'
     })
 })
 export default userRoute;
