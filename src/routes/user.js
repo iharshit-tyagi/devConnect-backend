@@ -1,8 +1,9 @@
 import { response, Router } from "express"
 import { hashPassword, verifyPassword } from "../utils/hashHelper.js";
-import { createUserinDB, getUserFromDB, getUsersListFromDB, deleteUserInDB, updateAccessTokenInDB, updateUserInDB } from "../controllers/UserController.js";
-import { generateAccessToken } from "../utils/jwtHelper.js";
+import { createUserinDB, getUserFromDB, getUsersListFromDB, deleteUserInDB, updateUserInDB } from "../controllers/UserController.js";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwtHelper.js";
 import { checkAuthStatus } from "../middlewares/authMiddleware.js";
+import { updateRefreshTokenInDB } from '../controllers/tokenController.js'
 
 const userRoute = Router();
 
@@ -56,7 +57,7 @@ const readDataToUpdate = (req, res, next) => {
     }
 }
 
-userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generateAccessToken, (req, res) => {
+userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generateAccessToken, generateRefreshToken, updateRefreshTokenInDB, (req, res) => {
 
     delete req?.userFromDB?.password;
     delete req?.userFromDB?.accessToken;
@@ -66,7 +67,7 @@ userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generat
         response: req?.userFromDB
     })
 })
-userRoute.post('/signup', checkSignUpBody, hashPassword, createUserinDB, generateAccessToken, (req, res) => {
+userRoute.post('/signup', checkSignUpBody, hashPassword, createUserinDB, generateAccessToken, generateRefreshToken, updateRefreshTokenInDB, (req, res) => {
     delete req?.userFromDB?.password
 
     res.status(200).json({

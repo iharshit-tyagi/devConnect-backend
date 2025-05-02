@@ -14,6 +14,21 @@ export const generateAccessToken = async (req, res, next) => {
         next(err)
     }
 }
+export const generateRefreshToken = async (req, res, next) => {
+    const token = await jwt.sign({ id: req?.userFromDB?.id }, process.env.JWT_PRIVATE_KEY, { expiresIn: '2 days' });
+    try {
+        res.cookie('refreshToken', token, {
+            httpOnly: true, // Prevents client-side access
+            secure: true, // Ensures the cookie is sent over HTTPS
+            sameSite: 'strict', // Prevents CSRF attacks
+            maxAge: 90000000,
+        })
+        req.refreshToken = token;
+        next();
+    } catch (err) {
+        next(err)
+    }
+}
 export const verifyToken = async (token) => {
     let decodedInfo = null;
     await jwt.verify(token, process.env.JWT_PRIVATE_KEY, function (err, decoded) {

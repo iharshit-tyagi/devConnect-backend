@@ -77,22 +77,6 @@ export const getUsersListFromDB = async (req, res, next) => {
     }
 }
 
-export const updateAccessTokenInDB = async (req, res, next) => {
-    try {
-        const result = await prisma.users.update({
-            data: { accessToken: req?.data },
-            where: {
-                // 
-                id: req?.userFromDB?.id
-            }
-
-        });
-        req.userFromDB = result;
-        next();
-    } catch (err) {
-        next(err);
-    }
-}
 
 export const updateUserInDB = async (req, res, next) => {
     try {

@@ -28,6 +28,7 @@ model users {
   sentMessages          messages[]
   matchesAsUser1        matches[]        @relation("User1Relation")
   matchesAsUser2        matches[]        @relation("User2Relation")
+  RefreshToken          RefreshToken[]
 }
 
 // 2️⃣ Match Requests table
@@ -67,4 +68,18 @@ model messages {
   // Relations
   match  matches @relation(fields: [match_id], references: [id])
   sender users   @relation(fields: [sender_id], references: [id])
+}
+
+model RefreshToken {
+  id           String   @id @default(uuid())
+  userId       String
+  refreshToken String
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime
+  userAgent    String? // optional
+  ipAddress    String? // optional
+
+  user users @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
