@@ -102,7 +102,7 @@ export const updateUserInDB = async (req, res, next) => {
             }, select: {
                 firstName: true,
                 lastName: true,
-                accessToken: false,
+                // accessToken: false,
                 password: false,
                 email: true
             }

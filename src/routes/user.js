@@ -56,7 +56,7 @@ const readDataToUpdate = (req, res, next) => {
     }
 }
 
-userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generateAccessToken, updateAccessTokenInDB, (req, res) => {
+userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generateAccessToken, (req, res) => {
 
     delete req?.userFromDB?.password;
     delete req?.userFromDB?.accessToken;
@@ -66,7 +66,7 @@ userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generat
         response: req?.userFromDB
     })
 })
-userRoute.post('/signup', checkSignUpBody, hashPassword, createUserinDB, generateAccessToken, updateAccessTokenInDB, (req, res) => {
+userRoute.post('/signup', checkSignUpBody, hashPassword, createUserinDB, generateAccessToken, (req, res) => {
     delete req?.userFromDB?.password
 
     res.status(200).json({
