@@ -16,6 +16,9 @@ export const generateAccessToken = async (req, res, next) => {
 }
 export const generateRefreshToken = async (req, res, next) => {
     const token = await jwt.sign({ id: req?.userFromDB?.id }, process.env.JWT_PRIVATE_KEY, { expiresIn: '2 days' });
+    const dec = await jwt.decode(token);
+    req.expiresAt = dec?.exp;
+
     try {
         res.cookie('refreshToken', token, {
             httpOnly: true, // Prevents client-side access

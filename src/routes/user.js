@@ -59,8 +59,9 @@ const readDataToUpdate = (req, res, next) => {
 
 userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generateAccessToken, generateRefreshToken, updateRefreshTokenInDB, (req, res) => {
 
+
     delete req?.userFromDB?.password;
-    delete req?.userFromDB?.accessToken;
+    delete req?.userFromDB?.refreshToken;
     res.status(200).json({
         success: true,
         result: 'Logged in',

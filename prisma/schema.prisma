@@ -11,15 +11,15 @@ datasource db {
 model users {
   id           String   @id @default(uuid())
   firstName    String   @map("first_name")
-  lastName     String?  @default("") @map("last_name")
+  lastName     String?  @map("last_name")
   username     String   @unique
   email        String   @unique
   password     String   @map("password_hash")
-  bio          String?  @default("")
-  avatar_url   String?  @default("")
+  bio          String?
+  avatar_url   String?
   skills       String[]
-  github_url   String?  @default("")
-  linkedin_url String?  @default("")
+  github_url   String?
+  linkedin_url String?
   created_at   DateTime @default(now())
 
   // Relations
