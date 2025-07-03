@@ -122,6 +122,23 @@ export const deleteUserInDB = async (req, res, next) => {
         next(err);
     }
 }
+export const getSignedinUser = async(req,res,next)=>{
+    try{
+    const response = await prisma.users.findFirst({
+        where: {
+           id:req?.userId
+        }
+    });
+    if(!response){
+        res.status(401).json({message:'User is not Logged in'});
+        return;
+    }
+    req.user=response;
+    next()
+    }catch(err){
+console.log(err)
+    }
+}
 
 
 
