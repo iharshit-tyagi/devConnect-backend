@@ -14,7 +14,7 @@ This repository contains the **API service** that powers user registration, auth
 
 ## 🛠️ Tech Stack
 
-- **Backend:** Node.js, Express.js, TypeScript
+- **Backend:** Node.js, Express.js, Javascript
 - **Database:** PostgreSQL
 - **ORM:** Prisma
 - **Authentication:** JWT (Access & Refresh Tokens)
