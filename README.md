@@ -1,38 +1,71 @@
-# 📦 Project Name
+# 🚀 DevConnect Backend
 
-A brief description of your backend project — what it does and why you built it.
+**DevConnect** is a developer matchmaking and collaboration platform backend.  
+This repository contains the **API service** that powers user registration, authentication, match requests, matches, and messaging for the DevConnect platform.t.
 
-## 📜 Features
-- Feature 1 (e.g., JWT authentication)
-- Feature 2 (e.g., RESTful API endpoints for X, Y, Z)
-- Feature 3 (e.g., Caching with Redis)
+## 📖 Features
 
-## 🚀 Tech Stack
-- Node.js (Express)
-- MongoDB / PostgreSQL
-- JWT Authentication
-- AWS EC2 / Railway (for deployment)
-- Docker (if containerized)
-- Swagger / Postman (for API docs)
+- 🔐 **JWT-based Authentication with Refresh Tokens**
+- 📄 **User Profiles** — including bio, skills, social links
+- 🎯 **Match Request System** — request, accept, and manage developer matches
+- 💬 **Messaging between Matched Users**
+- 🗄️ **Clean, Scalable Prisma-powered PostgreSQL Database Design**
 
-## 🌐 Live API
-Deployed here 👉 [https://your-api-url.com](https://your-api-url.com)
 
-## 📑 API Documentation
-- Swagger Docs 👉 [https://your-api-url.com/api-docs](https://your-api-url.com/api-docs)
-- Postman Collection 👉 [Download here](./postman_collection.json)
+## 🛠️ Tech Stack
 
-## 🖥️ Database Schema
-![Database Schema](./db-schema.png)
+- **Backend:** Node.js, Express.js, TypeScript
+- **Database:** PostgreSQL
+- **ORM:** Prisma
+- **Authentication:** JWT (Access & Refresh Tokens)
+- **Dev Tools:** Nodemon, ESLint, Prettier, dotenv
 
-## 📌 API Endpoints Overview
+## 📦 Database Overview
 
-| Method | Endpoint              | Description             | Protected |
-|:--------|:-----------------------|:--------------------------|:------------|
-| POST    | `/api/register`       | Register a new user       | ❌          |
-| POST    | `/api/login`          | Login user                | ❌          |
-| GET     | `/api/products`       | Fetch all products        | ✅          |
-| POST    | `/api/products`       | Add a new product         | ✅ (Admin)  |
+**Tables**
+- `users`
+- `match_requests`
+- `matches`
+- `messages`
+- `refresh_tokens`
+
+**Relations**
+- One-to-many: `users` → `refresh_tokens`
+- One-to-many: `users` → `match_requests` (sent and received)
+- Many-to-many: `users` ↔️ `matches`
+- One-to-many: `users` → `messages`
+
+  ## 🔐 Auth & Token Flow
+
+- **Access Token**: JWT, short-lived, sent with each authenticated request
+- **Refresh Token**: Stored in DB with device info & IP. Used to issue new access tokens
+- Tokens tied to users with proper expiry timestamps stored as `DateTime` values in PostgreSQL
+- Token revocation support via DB record deletion
+
+
+## 📡 API Endpoints (Planned/Implemented)
+
+| Method | Endpoint                    | Description                            | Auth Required |
+|:--------|:----------------------------|:----------------------------------------|:--------------|
+| POST   | `/auth/register`             | Register a new user                    | ❌           |
+| POST   | `/auth/login`                | Login and receive tokens               | ❌           |
+| POST   | `/auth/refresh-token`        | Get new access token via refresh token | ❌           |
+| GET    | `/users/me`                  | Get authenticated user's profile       | ✅           |
+| POST   | `/matches/request`           | Send a match request                   | ✅           |
+| POST   | `/matches/accept`            | Accept a match request                 | ✅           |
+| GET    | `/matches`                   | List all matches for user              | ✅           |
+| POST   | `/messages`                  | Send message to a matched user         | ✅           |
+| GET    | `/messages/:matchId`         | Get chat history for a match           | ✅           |
+
+## 📜 Project Philosophy
+
+DevConnect Backend is designed for:
+- **Separation of concerns between user data, tokens, and chat systems**
+- **Production-grade, scalable authentication handling**
+- **Clean, type-safe Prisma models**
+- **Token-based session management with per-device tracking**
+
+
 
 ## ⚙️ Installation
 
