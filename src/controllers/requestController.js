@@ -15,6 +15,25 @@ return user;
     
 }
 }
+
+export const getAllMatches= async (req,res,next)=>{
+    try{
+        const matches= prisma.matches.findMany({
+            where:{
+                OR:[{
+                    user1_id:req?.userId
+                },
+            {
+                    user2_id:req?.userId
+                }]
+            }
+        })
+        req.matchInfo= matches;
+        next()
+    }catch(err){
+        next(err);
+    }
+}
 export const SendMatchRequest= async (req,res,next)=>{
     const receiverUserId= req?.params?.toUserId;
     const senderUserId=req?.userId;
@@ -31,7 +50,7 @@ export const SendMatchRequest= async (req,res,next)=>{
             receiver_id:receiverUserId
         }
     })
-    console.log(matchReq);
+   req.matchReqInfo=matchReq;
     
     if(matchReq.status!=='error'){
 
@@ -47,4 +66,81 @@ catch(err){
 next(err)
 }
 
+}
+
+export const getAllMatchRequests= async (req,res,next)=>{
+   
+   try{
+     const allRequest= await prisma.match_requests.findMany({
+         where:{
+               receiver_id:req?.userId
+           }
+       })
+       req.matchReqs=allRequest;
+       next();
+   }catch(err){
+next(err)
+   }
+}
+
+export const acceptMatchRequest= async (req,res,next)=>{
+    try{
+        //to accept  a match , i will have to match_req id with me 
+        const matchReq= await prisma.match_requests.findFirst({
+            where:{
+                id:req?.params?.reqId
+            }
+        })
+       if(!matchReq){
+        res.status(408).json({
+            message:'Match Req Does not exist'
+        })
+        return
+       }
+       const newMatch = await prisma.matches.create({
+        data:{
+            user1_id: matchReq?.receiver_id,
+            user2_id: matchReq?.sender_id
+        }
+       })
+        if(newMatch){
+            req.matchInfo= newMatch;
+            await prisma.match_requests.delete({
+                where:{
+                    id:req?.params?.reqId
+                }
+            })
+            next();
+        }
+   
+    }catch(err){
+
+    }
+}
+
+export const rejectMatchRequest=async (req,res,next)=>{
+    try{
+ //to Reject   a match , i will have to match_req id with me 
+        const matchReq= await prisma.match_requests.findFirst({
+            where:{
+                id:req?.params?.reqId
+            }
+        })
+       if(!matchReq){
+        res.status(408).json({
+            message:'Match Req Does not exist'
+        })
+        return
+       }
+       
+      const deleteMatch=   await prisma.match_requests.delete({
+                where:{
+                    id:req?.params?.reqId
+                }
+            })
+            req.deleteMatchInfo= deleteMatch;
+            next();
+    }catch(err){
+        next(err)
+    }
 }
