@@ -57,4 +57,15 @@ userAuth.post('/signup', checkSignUpBody, hashPassword, createUserinDB, generate
         response: req?.userFromDB
     })
 })
+
+userAuth.post('/logout',(req,res)=>{
+    res.clearCookie('accessToken',{
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: true
+  });
+    res.status(200).json({
+        message:'Logged out'
+    })
+})
 export default userAuth;

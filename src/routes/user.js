@@ -7,38 +7,6 @@ import { checkAuthStatus } from "../middlewares/authMiddleware.js";
 
 const userRoute = Router();
 
-// const checkLoginBody = (req, res, next) => {
-
-//     const email = req?.body?.email;
-//     const password = req?.body?.password;
-//     const username = req?.body?.username;
-
-//     if (!(email || username) || !password) {
-//         res.status(400).json({
-//             success: false,
-//             message: 'Email or Password is missing'
-//         });
-//         return;
-//     }
-//     next();
-
-// }
-// const checkSignUpBody = (req, res, next) => {
-//     const email = req?.body?.email;
-//     const password = req?.body?.password;
-//     const name = req?.body?.username;
-//     const firstName = req?.body?.firstName;
-//     if (!email || !password || !name || !firstName) {
-//         res.status(400).json({
-//             success: false,
-//             message: 'Invalid Input'
-//         });
-//         return;
-//     }
-//     next();
-
-// }
-
 const readDataToUpdate = (req, res, next) => {
     try {
         const dataToUpdate = req?.body;
@@ -57,26 +25,6 @@ const readDataToUpdate = (req, res, next) => {
     }
 }
 
-// userRoute.post('/signin', checkLoginBody, getUserFromDB, verifyPassword, generateAccessToken, generateRefreshToken, updateRefreshTokenInDB, (req, res) => {
-
-
-//     delete req?.userFromDB?.password;
-//     delete req?.userFromDB?.refreshToken;
-//     res.status(200).json({
-//         success: true,
-//         result: 'Logged in',
-//         response: req?.userFromDB
-//     })
-// })
-// userRoute.post('/signup', checkSignUpBody, hashPassword, createUserinDB, generateAccessToken, generateRefreshToken, updateRefreshTokenInDB, (req, res) => {
-//     delete req?.userFromDB?.password
-
-//     res.status(200).json({
-//         success: true,
-//         result: 'Signed Up',
-//         response: req?.userFromDB
-//     })
-// })
 userRoute.get('/userlist', checkAuthStatus, getUsersListFromDB, (req, res) => {
     res.status(200).json({
         success: true,
@@ -84,7 +32,6 @@ userRoute.get('/userlist', checkAuthStatus, getUsersListFromDB, (req, res) => {
     })
 
 })
-
 
 userRoute.patch('/update', checkAuthStatus, readDataToUpdate, updateUserInDB, (req, res) => {
 
