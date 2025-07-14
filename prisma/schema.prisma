@@ -42,6 +42,8 @@ model match_requests {
   // Relations
   sender   users @relation("SenderRelation", fields: [sender_id], references: [id])
   receiver users @relation("ReceiverRelation", fields: [receiver_id], references: [id])
+
+  @@unique([sender_id, receiver_id])
 }
 
 // 3️⃣ Matches table

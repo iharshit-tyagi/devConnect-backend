@@ -11,7 +11,21 @@ app.use(cors({ credentials: true, origin: 'http://localhost:5173' }));
 app.use(cookieParser());
 app.use(express.json());
 //This line is here to handle cors issues
-app.use('/api/v1', v1)
+app.use('/api/v1', v1);
+
+app.use((req,res)=>{
+    res.status(404).json({
+        message:'Path does not exist'
+    })
+})
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+
+  res.status(500).json({
+    status: "error",
+    message: err.message || "Internal Server Error",
+  });
+});
 app.listen(port, () => {
     console.log('App is Listening to Port ' + port);
 
