@@ -4,7 +4,7 @@ export const generateAccessToken = async (req, res, next) => {
     try {
         res.cookie('accessToken', token, {
             httpOnly: true, // Prevents client-side access
-            secure: true, // Ensures the cookie is sent over HTTPS
+            secure: false, // Ensures the cookie is sent over HTTPS
             sameSite: 'strict', // Prevents CSRF attacks
             maxAge: 3600000, // 1 hour
         })

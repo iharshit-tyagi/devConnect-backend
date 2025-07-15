@@ -65,7 +65,8 @@ export const getUsersListFromDB = async (req, res, next) => {
                 username: true,
                 email: true,
                 firstName: true,
-                lastName: true
+                lastName: true,
+                id:true
             },
         });
         req.response = result;

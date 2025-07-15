@@ -59,11 +59,12 @@ userAuth.post('/signup', checkSignUpBody, hashPassword, createUserinDB, generate
 })
 
 userAuth.post('/logout',(req,res)=>{
-    res.clearCookie('accessToken',{
-    httpOnly: true,
-    sameSite: 'strict',
-    secure: true
+  res.clearCookie("accessToken", {
+    httpOnly: true,     
+    secure:false ,  // set to true if using https
+    sameSite: "strict",  // or "lax" depending on your frontend setup
   });
+
     res.status(200).json({
         message:'Logged out'
     })
