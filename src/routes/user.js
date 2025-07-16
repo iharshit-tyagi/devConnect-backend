@@ -13,6 +13,15 @@ const readDataToUpdate = (req, res, next) => {
         // console.log(dataToUpdate);
 
         if (Object.keys(dataToUpdate).length > 0) {
+            const rawSkills = req.body.skills;
+
+            const parsedSkills = rawSkills
+                    .split(',')
+                    .map(skill => skill.trim())
+                    .filter(skill => skill !== '');
+
+                req.body.skills=parsedSkills;
+
             next();
             return;
         } else {
