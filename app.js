@@ -7,7 +7,13 @@ import cors from "cors"
 const app = express();
 // const port =3000;
 const port = process.env.PORT || 4000;
-app.use(cors({ credentials: true, origin: 'http://localhost:5173' }));
+const corsOptions = {
+  origin: 'http://localhost:5173', 
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 //This line is here to handle cors issues
