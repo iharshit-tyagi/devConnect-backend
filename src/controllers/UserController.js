@@ -61,13 +61,9 @@ export const getUserFromDB = async (req, res, next) => {
 export const getUsersListFromDB = async (req, res, next) => {
     try {
         const result = await prisma.users.findMany({
-            select: {
-                username: true,
-                email: true,
-                firstName: true,
-                lastName: true,
-                id:true
-            },
+           omit:{
+            password:true,created_at:true,
+           }
         });
         req.response = result;
         // req.userFromDB = userInDB;
