@@ -72,9 +72,26 @@ export const getAllMatchRequests= async (req,res,next)=>{
    
    try{
      const allRequest= await prisma.match_requests.findMany({
-         where:{
-               receiver_id:req?.userId
-           }
+        where: {
+        receiver_id: req?.userId,
+      },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            avatar_url: true,
+            skills: true,
+            bio: true,
+            github_url: true,
+            linkedin_url: true,
+          },
+        },
+      },
+      orderBy: {
+        created_at: "desc",
+      },
        })
        req.matchReqs=allRequest;
        next();
