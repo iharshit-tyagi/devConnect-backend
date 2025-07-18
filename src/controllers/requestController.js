@@ -16,24 +16,50 @@ return user;
 }
 }
 
-export const getAllMatches= async (req,res,next)=>{
-    try{
-        const matches= prisma.matches.findMany({
-            where:{
-                OR:[{
-                    user1_id:req?.userId
-                },
-            {
-                    user2_id:req?.userId
-                }]
-            }
-        })
-        req.matchInfo= matches;
-        next()
-    }catch(err){
-        next(err);
-    }
-}
+export const getAllMatches = async (req, res, next) => {
+  try {
+    const matches = await prisma.matches.findMany({
+      where: {
+        OR: [
+          { user1_id: req?.userId },
+          { user2_id: req?.userId }
+        ]
+      },
+      include: {
+        user1: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            username: true,
+            avatar_url: true,
+            bio: true,
+            skills: true,
+          }
+        },
+        user2: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            username: true,
+            avatar_url: true,
+            bio: true,
+            skills: true,
+          }
+        }
+      }
+    });
+
+    return res.status(200).json({
+      message: "List of all matches",
+      data: matches
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const SendMatchRequest= async (req,res,next)=>{
     const receiverUserId= req?.params?.toUserId;
     const senderUserId=req?.userId;
