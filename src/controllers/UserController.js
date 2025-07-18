@@ -1,138 +1,130 @@
 //Controllers related to user
 
-import prisma from "../config/db.js"
+import prisma from "../config/db.js";
 
 const checkIfUserExist = async (username, email) => {
-    const response = await prisma.users.findFirst({
-        where: {
-            OR:
-                [{ username },
-                { email }
-                ]
-        }
-    });
-    return response;
-}
+  const response = await prisma.users.findFirst({
+    where: {
+      OR: [{ username }, { email }],
+    },
+  });
+  return response;
+};
 export const createUserinDB = async (req, res, next) => {
-    try {
-        const userInDB = await checkIfUserExist(req?.body?.username);
+  try {
+    const userInDB = await checkIfUserExist(req?.body?.username);
 
-
-        if (userInDB) {
-            res.status(402).json({
-                message: 'User already Exist'
-            });
-            return;
-        }
-        const response = await prisma.users.create({
-            data: {
-                username: req?.body?.username,
-                email: req?.body?.email,
-                password: req?.hashPassword,
-                firstName: req?.body?.firstName
-            }
-        })
-        req.userFromDB = response;
-        next();
-
-    } catch (err) {
-        console.log(err);
-        res.json(err)
+    if (userInDB) {
+      res.status(402).json({
+        message: "User already Exist",
+      });
+      return;
     }
-}
+    const response = await prisma.users.create({
+      data: {
+        username: req?.body?.username,
+        email: req?.body?.email,
+        password: req?.hashPassword,
+        firstName: req?.body?.firstName,
+      },
+    });
+    req.userFromDB = response;
+    next();
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+};
 export const getUserFromDB = async (req, res, next) => {
-    try {
-        const userInDB = await checkIfUserExist(req?.body?.username, req?.body?.email)
-        if (!userInDB) {
-            res.status(404).json({
-                message: 'User Does not Exist'
-            });
-            return;
-        }
-        req.userFromDB = userInDB;
-        next()
+  try {
+    const userInDB = await checkIfUserExist(
+      req?.body?.username,
+      req?.body?.email
+    );
+    if (!userInDB) {
+      res.status(404).json({
+        message: "User Does not Exist",
+      });
+      return;
     }
-    catch (err) {
-        console.log(err);
-
-    }
-}
+    req.userFromDB = userInDB;
+    next();
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 export const getUsersListFromDB = async (req, res, next) => {
-    try {
-        const result = await prisma.users.findMany({
-           omit:{
-            password:true,created_at:true,
-           }
-        });
-        req.response = result;
-        // req.userFromDB = userInDB;
-        next()
-    }
-    catch (err) {
-        console.log(err);
-    }
-}
-
+  try {
+    const result = await prisma.users.findMany({
+      omit: {
+        password: true,
+        created_at: true,
+      },
+    });
+    req.response = result;
+    // req.userFromDB = userInDB;
+    next();
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 export const updateUserInDB = async (req, res, next) => {
-    try {
-        const result = await prisma.users.update({
-            data: req?.body, where: {
-                id: req?.userId
-            },omit:{
-                password:true,
-            }
-        })
-        if (result) {
-            req.userFromDB = result;
-            next();
-        }
-    } catch (err) {
-        next(err);
+  try {
+    const result = await prisma.users.update({
+      data: req?.body,
+      where: {
+        id: req?.userId,
+      },
+      omit: {
+        password: true,
+      },
+    });
+    if (result) {
+      req.userFromDB = result;
+      next();
     }
-}
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const deleteUserInDB = async (req, res, next) => {
-    try {
-        const deletedUser = await prisma.users.delete({
-            where: {
-                id: req?.userId
-            }
-        })
-        console.log(deletedUser);
-
-        if (deletedUser) {
-            next();
-        }
-        else {
-            res.status(400).json({
-                message: 'Could not delete user !'
-            })
-        }
-        next();
-    } catch (err) {
-        next(err);
-    }
-}
-export const getSignedinUser = async(req,res,next)=>{
-    try{
-    const response = await prisma.users.findFirst({
-        where: {
-           id:req?.userId
-        }
+  try {
+    const deletedUser = await prisma.users.delete({
+      where: {
+        id: req?.userId,
+      },
     });
-    if(!response){
-        res.status(401).json({message:'User is not Logged in'});
-        return;
+    console.log(deletedUser);
+
+    if (deletedUser) {
+      next();
+    } else {
+      res.status(400).json({
+        message: "Could not delete user !",
+      });
     }
-    req.user=response;
-    next()
-    }catch(err){
-console.log(err)
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+export const getSignedinUser = async (req, res, next) => {
+  try {
+    const response = await prisma.users.findFirst({
+      where: {
+        id: req?.userId,
+      },
+    });
+    if (!response) {
+      res.status(401).json({ message: "User is not Logged in" });
+      return;
     }
-}
-
-
-
-
+    req.user = response;
+    next();
+  } catch (err) {
+    console.log(err);
+  }
+};
