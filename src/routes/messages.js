@@ -10,6 +10,7 @@ messageRoute.post("/send", checkAuthStatus, sendMessage, (req, res) => {
   res.status(200).json({
     message: "Sent Successfully!",
     data: req?.messageInfo,
+    success: true,
   });
 });
 messageRoute.post(
@@ -20,6 +21,7 @@ messageRoute.post(
     res.status(200).json({
       message: "Sent Successfully!",
       data: req?.messageList,
+      success: true,
     });
   }
 );

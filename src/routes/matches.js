@@ -6,6 +6,7 @@ import {
   acceptMatchRequest,
   rejectMatchRequest,
   getAllMatches,
+  checkIfMatchReqExist,
 } from "../controllers/requestController.js";
 const matchesRoute = Router();
 
@@ -14,6 +15,7 @@ matchesRoute.get("/", checkAuthStatus, getAllMatches, (req, res) => {
   res.status(200).json({
     message: "List of all matches",
     data: req?.matchInfo,
+    success: true,
   });
 });
 
@@ -21,14 +23,13 @@ matchesRoute.get("/", checkAuthStatus, getAllMatches, (req, res) => {
 matchesRoute.post(
   "/request/:toUserId",
   checkAuthStatus,
+  checkIfMatchReqExist,
   SendMatchRequest,
   (req, res) => {
-    const toUserId = req?.params?.toUserId;
-    console.log(toUserId);
-
     res.status(200).json({
-      message: "Sent rquest to user " + toUserId,
+      message: "Sent rquest to user ",
       data: req.matchReqInfo,
+      success: true,
     });
   }
 );
@@ -42,6 +43,7 @@ matchesRoute.get(
     res.status(200).json({
       message: "List of all match requests",
       data: req?.matchReqs,
+      success: true,
     });
   }
 );
@@ -54,6 +56,7 @@ matchesRoute.patch(
     res.status(200).json({
       message: "Match Accepted",
       data: req?.matchInfo,
+      success: true,
     });
   }
 );
@@ -67,6 +70,7 @@ matchesRoute.delete(
     res.status(200).json({
       message: "Match rejected",
       data: req.deleteMatchInfo,
+      success: true,
     });
   }
 );

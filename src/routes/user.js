@@ -55,11 +55,16 @@ userRoute.delete("/delete", checkAuthStatus, deleteUserInDB, (req, res) => {
   //   }
   res.status(200).json({
     message: "User Deleted",
+    success: true,
   });
 });
 
 userRoute.get("/view", checkAuthStatus, getSignedinUser, (req, res) => {
   delete req?.user?.password;
-  res.status(200).json(req?.user);
+  res.status(200).json({
+    message: "User Deleted",
+    data: req?.user,
+    success: true,
+  });
 });
 export default userRoute;

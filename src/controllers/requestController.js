@@ -1,5 +1,38 @@
 import prisma from "../config/db.js";
 
+export const checkIfMatchReqExist = async (req, res, next) => {
+  try {
+    const user1 = req?.params?.toUserId;
+    const user2 = req?.userId;
+    const mactchReq = await prisma.match_requests.findFirst({
+      where: {
+        OR: [
+          {
+            sender_id: user1,
+            receiver_id: user2,
+          },
+          {
+            sender_id: user2,
+            receiver_id: user1,
+          },
+        ],
+      },
+    });
+    if (mactchReq) {
+      console.log(mactchReq);
+
+      res.status(403).json({
+        message: "Request already Exist",
+        success: false,
+      });
+    } else {
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getUserWithID = async (userId) => {
   try {
     const user = await prisma.users.findFirst({
